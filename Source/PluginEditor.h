@@ -21,12 +21,12 @@ class OneKnobClipAudioProcessorEditor  : public juce::AudioProcessorEditor
 public:
     OneKnobClipAudioProcessorEditor (OneKnobClipAudioProcessor&);
     ~OneKnobClipAudioProcessorEditor() override;
-
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
 
 private:
+    void paintSlider(juce::Graphics& g, juce::Slider& slider);
     void sliderValueChanged(juce::Slider* slider) override;
     void buttonClicked(juce::Button* button) override;
     // This reference is provided as a quick way for your editor to
@@ -37,7 +37,6 @@ private:
     juce::ToggleButton hardBtn;
     juce::ToggleButton analogBtn;
     juce::ToggleButton bypass;
-
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OneKnobClipAudioProcessorEditor)
 };

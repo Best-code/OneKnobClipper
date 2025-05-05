@@ -32,8 +32,6 @@ void OneKnobClipAudioProcessorEditor::sliderValueChanged (juce::Slider* slider)
 /*
     BUTTON STUFF HERE
 */
-
-
 void OneKnobClipAudioProcessorEditor::buttonClicked(juce::Button *button)
 {
     if(button == &delta)
