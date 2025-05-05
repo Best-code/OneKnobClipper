@@ -156,14 +156,13 @@ bool OneKnobClipAudioProcessor::isBusesLayoutSupported (const BusesLayout& layou
 }
 #endif
 
-float OneKnobClipAudioProcessor::hardClip(float sampleIn, float threshold){
-    float clipThreshold = juce::Decibels::decibelsToGain(threshold); // Linear gain
-    return juce::jlimit(-clipThreshold, clipThreshold, sampleIn);
+float OneKnobClipAudioProcessor::hardClip(float sampleIn){
+    return juce::jlimit(-1.f, 1.f, sampleIn);
 }
 
-float OneKnobClipAudioProcessor::analogClip(float sampleIn, float threshold) {
-    const float clipThreshold = juce::Decibels::decibelsToGain(threshold);              // 0 dB or user-defined
-    const float softThreshold = juce::Decibels::decibelsToGain(threshold - softDistance); // e.g. -6 dB
+float OneKnobClipAudioProcessor::analogClip(float sampleIn) {
+    const float clipThreshold = juce::Decibels::decibelsToGain(0.f);              // 0 dB or user-defined
+    const float softThreshold = juce::Decibels::decibelsToGain(0.f - softDistance); // e.g. -6 dB
 
     const float absIn = std::abs(sampleIn);
     float shaped = sampleIn;
@@ -197,7 +196,14 @@ void OneKnobClipAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     
+    float inputGain =  juce::Decibels::decibelsToGain(-proThreshold);
+    float outputGain = 1.f/inputGain;
+    float deltaSample;
     
+    // Calculate gain steps
+    float inputGainStep = (inputGain - lastInputGain) / buffer.getNumSamples();
+    float outputGainStep = (outputGain - (1.0f / lastInputGain)) / buffer.getNumSamples();
+
     // === Get clipping threshold from dB slider ===
     // Assuming you have a Slider or parameter called clipperSlider or clipThresholdDbParam
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
@@ -207,18 +213,27 @@ void OneKnobClipAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         
         for (int sample = 0; sample < numSamples; ++sample)
         {
-            float processedSample;
-            if(hardClipMode)
-                processedSample = hardClip(channelData[sample], proThreshold); // Hard Clip
-            else
-                processedSample = analogClip(channelData[sample], proThreshold); // Analog Clip
+            // Gain Ramp - No Clicks when moving
+            inputGain = lastInputGain + inputGainStep * sample;
+            outputGain = (1.0f / lastInputGain) + outputGainStep * sample;
+
             
+            float processedSample = channelData[sample] * inputGain;
+            if(hardClipMode)
+                processedSample = hardClip(processedSample); // Hard Clip
+            else
+                processedSample = analogClip(processedSample); // Analog Clip
+            processedSample *= outputGain;
+            
+            
+            deltaSample = channelData[sample] - processedSample;
             if(delta)
-                channelData[sample] -= processedSample;
+                channelData[sample] = deltaSample;
             else
                 channelData[sample] = processedSample;
         }
     }
+    lastInputGain = inputGain;
 }
 
 //==============================================================================

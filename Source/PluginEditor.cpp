@@ -18,7 +18,7 @@ OneKnobClipAudioProcessorEditor::OneKnobClipAudioProcessorEditor (OneKnobClipAud
     
     threshold.setSliderStyle(juce::Slider::LinearBarVertical);
     threshold.setRange(-18.0, 0, 0.01);
-    threshold.setTextBoxStyle (juce::Slider::TextBoxRight, false, 60, 20);
+    threshold.setTextBoxStyle (juce::Slider::NoTextBox, false, 60, 20);
     threshold.setPopupDisplayEnabled (true, false, this);
     threshold.setTextValueSuffix (" dB");
     threshold.setTooltip("Clipper Threshold (dB)");
@@ -63,7 +63,7 @@ void OneKnobClipAudioProcessorEditor::paint (juce::Graphics& g)
     
     g.setColour (juce::Colours::white);
     g.setFont (juce::FontOptions (15.0f));
-    g.drawFittedText ("EZ Clipr", 80, 250, 100, 100, juce::Justification::centred, 1);
+    g.drawFittedText ("EZ Clip", 80, 250, 100, 100, juce::Justification::centred, 1);
 }
 
 void OneKnobClipAudioProcessorEditor::resized()

@@ -22,6 +22,7 @@ public:
     bool delta;
     bool bypass;
     
+    float lastInputGain = 1.f;
     float softDistance = 6;
     
     //==============================================================================
@@ -62,8 +63,8 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
-    float hardClip(float sampleIn, float threshold);
-    float analogClip(float sampleIn, float threshold);
+    float hardClip(float sampleIn);
+    float analogClip(float sampleIn);
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OneKnobClipAudioProcessor)
 };
