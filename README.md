@@ -27,6 +27,13 @@ Restart DAW.
 ### Usage
 Clipping Amount Slider – Controls how much of the incoming signal is clipped.
 
+### License
+This project is licensed under the GNU General Public License v3.0.
+
+You are free to use, modify, and distribute this software under the terms of the GPL. Any derivative works must also be licensed under the GPL v3.0. See the LICENSE file for full details.
+
+
+
 Delta Button – Listen to the difference between input and clipped signal.
 
 Bypass – Toggle the entire clipper on or off.
